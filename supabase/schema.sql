@@ -216,3 +216,34 @@ select p.usaha_id, p.id as produk_id, p.nama, p.satuan, p.stok_minimum,
 from produk p
 left join stok_gerak s on s.produk_id = p.id
 group by p.usaha_id, p.id, p.nama, p.satuan, p.stok_minimum;
+
+-- Sub-project #6: trigger pembatas kolom untuk hutang_piutang.
+-- Supabase memetakan SEMUA user login ke satu role Postgres "authenticated" — beda owner/kasir
+-- murni data (anggota_usaha.role), bukan role DB terpisah. Karena itu GRANT kolom biasa tidak
+-- bisa membedakan owner vs kasir; satu-satunya cara membatasi kasir hanya boleh mengubah
+-- status pelunasan (bukan pihak/nominal/arah/jatuh_tempo) adalah trigger yang cek OLD vs NEW
+-- dan role via is_owner(). RLS "member update hutang_piutang" (di atas) tetap menjaga BARIS mana
+-- yang boleh disentuh; trigger ini menjaga KOLOM mana yang boleh diubah kasir. Divalidasi nyata
+-- di Postgres lokal: kasir ubah nominal → ditolak; kasir ubah status+sisa (Lunaskan) → lolos;
+-- owner ubah nominal → tetap lolos. Lih. DESIGN-06-HUTANG-PIUTANG.md.
+create or replace function enforce_hutang_piutang_update() returns trigger
+language plpgsql as $$
+begin
+  if is_owner(new.usaha_id) then
+    return new;
+  end if;
+  if new.pihak is distinct from old.pihak
+     or new.nominal is distinct from old.nominal
+     or new.arah is distinct from old.arah
+     or new.jatuh_tempo is distinct from old.jatuh_tempo
+     or new.usaha_id is distinct from old.usaha_id then
+    raise exception 'Kasir hanya boleh mengubah status pelunasan, bukan data hutang/piutang lainnya.';
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_hutang_piutang_update on hutang_piutang;
+create trigger trg_hutang_piutang_update
+  before update on hutang_piutang
+  for each row execute function enforce_hutang_piutang_update();
