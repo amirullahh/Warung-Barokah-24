@@ -1,19 +1,20 @@
--- Seed MVP — jalankan SETELAH schema.sql lengkap DAN setelah 2 user demo
+-- Seed MVP — dijalankan SETELAH schema.sql lengkap DAN setelah 2 user demo
 -- (owner@barokah.test, kasir@barokah.test) dibuat manual di Supabase Dashboard
--- -> Authentication -> Add user. Ganti UUID di bawah dengan UUID asli mereka
--- (dapat dilihat di Authentication -> Users setelah dibuat).
+-- -> Authentication -> Add user. UUID di bawah sudah diisi dengan UUID asli mereka
+-- di project "Warung Madura Barokah 24" (ahswhffkfpltmwsxuxfn), dicatat 2026-09-12
+-- — lih. DEPLOY-LOG-01-SETUP-SUPABASE.md.
 
 insert into profiles (id, nama) values
-  ('00000000-0000-0000-0000-000000000001', 'Pak Barokah (Owner)'), -- GANTI UUID
-  ('00000000-0000-0000-0000-000000000002', 'Kasir Pagi'); -- GANTI UUID
+  ('2c3bca3a-44ee-472e-8c64-59088816f4d7', 'Pak Barokah (Owner)'),
+  ('73a00cc2-c91e-489e-8965-2cadd6e7ac30', 'Kasir Pagi');
 
 insert into usaha (id, owner_id, nama, alamat, jam_operasional) values
-  ('10000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001',
+  ('10000000-0000-0000-0000-000000000001', '2c3bca3a-44ee-472e-8c64-59088816f4d7',
    'Warung Madura Barokah 24', 'Slipi, Kemanggisan, Palmerah, Jakarta Barat', '24 jam');
 
 insert into anggota_usaha (usaha_id, user_id, role) values
-  ('10000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 'owner'),
-  ('10000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000002', 'kasir');
+  ('10000000-0000-0000-0000-000000000001', '2c3bca3a-44ee-472e-8c64-59088816f4d7', 'owner'),
+  ('10000000-0000-0000-0000-000000000001', '73a00cc2-c91e-489e-8965-2cadd6e7ac30', 'kasir');
 
 insert into kategori (usaha_id, nama, tipe) values
   ('10000000-0000-0000-0000-000000000001', 'Jual Rokok', 'masuk'),
