@@ -151,7 +151,16 @@ create policy "owner delete kategori" on kategori for delete using (is_owner(usa
 
 create policy "member read transaksi" on transaksi for select using (is_member(usaha_id));
 create policy "member insert transaksi" on transaksi for insert with check (is_member(usaha_id));
-create policy "member update transaksi" on transaksi for update using (is_member(usaha_id));
+-- Dikoreksi 2026-09-12 (sub-project #5): versi awal "using (is_member(usaha_id))" mengizinkan
+-- kasir mengubah transaksi APAPUN, bertentangan dengan matriks di DATABASE.md ("Kasir: Update
+-- milik sendiri hari itu"). Diperketat: owner tetap CRUD penuh; kasir hanya boleh update
+-- transaksi yang dia buat sendiri (created_by) DAN bertanggal hari ini. Divalidasi nyata lewat
+-- RLS test di Postgres lokal (role non-superuser, auth.uid() disimulasikan) — lih.
+-- DESIGN-05-TRANSAKSI.md.
+create policy "member update transaksi" on transaksi for update using (
+  is_owner(usaha_id)
+  or (is_member(usaha_id) and created_by = auth.uid() and tanggal = current_date)
+);
 create policy "owner delete transaksi" on transaksi for delete using (is_owner(usaha_id));
 
 create policy "member read budget" on budget for select using (is_member(usaha_id));
