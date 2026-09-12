@@ -247,3 +247,69 @@ drop trigger if exists trg_hutang_piutang_update on hutang_piutang;
 create trigger trg_hutang_piutang_update
   before update on hutang_piutang
   for each row execute function enforce_hutang_piutang_update();
+
+-- ============================================
+-- Perbaikan Security Advisor Supabase (splinter linter), ditemukan 2026-09-12 setelah
+-- schema di atas benar-benar di-deploy ke project Supabase nyata (Warung Madura Barokah 24,
+-- region Asia-Pacific/Tokyo) — 7 warning, 0 error. Jalankan blok ini SETELAH semua di atas.
+-- ============================================
+--
+-- 1) is_member & is_owner dipindah ke schema baru "private" (isinya tidak diubah). Postgres
+--    menyimpan referensi fungsi di dalam definisi RLS policy sebagai OID internal, bukan
+--    re-resolve nama tiap query — jadi pemindahan schema ini AMAN, ke-15 policy yang memakai
+--    is_member()/is_owner() di atas tetap jalan tanpa perlu diubah satu pun. Efeknya: PostgREST
+--    /Data API cuma otomatis expose fungsi yang ada di schema "public" sebagai REST RPC
+--    endpoint — jadi keduanya jadi TIDAK BISA lagi dipanggil langsung lewat REST (anon maupun
+--    authenticated), padahal aslinya keduanya cuma dimaksud dipakai INTERNAL oleh RLS, bukan
+--    API publik. (linter: "Public/Signed-In Users Can Execute SECURITY DEFINER Function")
+-- 2) Ketiga fungsi (is_member, is_owner, enforce_hutang_piutang_update) di-pin search_path-nya.
+--    Tanpa ini, search_path bisa "dibajak" lewat session settings supaya reference tabel tanpa
+--    skema di dalam fungsi SECURITY DEFINER diarahkan ke objek lain (privilege escalation
+--    klasik Postgres SECURITY DEFINER). (linter: "Function Search Path Mutable")
+-- 3) enforce_hutang_piutang_update() isinya diganti (create or replace — OID & trigger yang
+--    sudah nempel di atas tidak berubah/tidak perlu dibuat ulang): rujukan is_owner() di-qualify
+--    jadi "private.is_owner(...)" karena is_owner sekarang di schema private, bukan lagi di
+--    search_path fungsi ini yang sengaja dipin ke "public, pg_temp" saja (kalau tidak
+--    di-qualify, fungsi ini akan error "function is_owner does not exist" begitu search_path-nya
+--    dipin).
+create schema if not exists private;
+
+alter function public.is_member(uuid) set schema private;
+alter function public.is_owner(uuid) set schema private;
+
+alter function private.is_member(uuid) set search_path = public, pg_temp;
+alter function private.is_owner(uuid) set search_path = public, pg_temp;
+
+create or replace function enforce_hutang_piutang_update() returns trigger
+language plpgsql
+set search_path = public, pg_temp
+as $$
+begin
+  if private.is_owner(new.usaha_id) then
+    return new;
+  end if;
+  if new.pihak is distinct from old.pihak
+     or new.nominal is distinct from old.nominal
+     or new.arah is distinct from old.arah
+     or new.jatuh_tempo is distinct from old.jatuh_tempo
+     or new.usaha_id is distinct from old.usaha_id then
+    raise exception 'Kasir hanya boleh mengubah status pelunasan, bukan data hutang/piutang lainnya.';
+  end if;
+  return new;
+end;
+$$;
+
+-- Storage bucket "struk" (private) + policy. Path upload konvensi:
+-- {usaha_id}/{transaksi_id}-{nama_file} (lih. TambahTransaksiForm.tsx), jadi
+-- (storage.foldername(name))[1] = usaha_id. file_size_limit + allowed_mime_types di level
+-- bucket sengaja disamakan dengan validasiStruk() di lib/core.ts (JPG/PNG, maks 5MB) sebagai
+-- defense-in-depth — validasi client-side saja bisa dilewati lewat request yang dimodifikasi.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('struk', 'struk', false, 5242880, array['image/jpeg','image/png'])
+on conflict (id) do nothing;
+
+create policy "member insert struk" on storage.objects for insert
+with check (bucket_id = 'struk' and private.is_member((storage.foldername(name))[1]::uuid));
+
+create policy "member read struk" on storage.objects for select
+using (bucket_id = 'struk' and private.is_member((storage.foldername(name))[1]::uuid));
