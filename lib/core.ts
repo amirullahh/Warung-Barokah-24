@@ -28,3 +28,16 @@ export function validasiStokKeluar(sisa: number, qty: number): string | null {
   if (qty > sisa) return `Stok tidak cukup (sisa ${sisa}, minta keluar ${qty}).`;
   return null;
 }
+
+const STRUK_MAX_BYTES = 5 * 1024 * 1024;
+const STRUK_TIPE_DIIZINKAN = ["image/jpeg", "image/jpg", "image/png"];
+
+export function validasiStruk(file: { size: number; type: string }): string | null {
+  if (!STRUK_TIPE_DIIZINKAN.includes(file.type)) {
+    return "Format struk harus JPG atau PNG.";
+  }
+  if (file.size > STRUK_MAX_BYTES) {
+    return "Ukuran struk maksimal 5MB.";
+  }
+  return null;
+}

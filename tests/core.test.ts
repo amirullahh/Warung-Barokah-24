@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { movingAverage, predictNext7, statusBudget, formatRp, statusStok, validasiStokKeluar } from "@/lib/core";
+import { movingAverage, predictNext7, statusBudget, formatRp, statusStok, validasiStokKeluar, validasiStruk } from "@/lib/core";
 
 describe("movingAverage", () => {
   it("menghitung rata-rata dari 7 angka", () => {
@@ -64,5 +64,20 @@ describe("validasiStokKeluar", () => {
   });
   it("qty > sisa -> pesan error", () => {
     expect(validasiStokKeluar(3, 5)).toMatch(/tidak cukup/);
+  });
+});
+
+describe("validasiStruk", () => {
+  it("jpg <5MB -> null (boleh)", () => {
+    expect(validasiStruk({ size: 1_000_000, type: "image/jpeg" })).toBeNull();
+  });
+  it("png <5MB -> null (boleh)", () => {
+    expect(validasiStruk({ size: 500_000, type: "image/png" })).toBeNull();
+  });
+  it("jpg >5MB -> pesan error ukuran", () => {
+    expect(validasiStruk({ size: 6_000_000, type: "image/jpeg" })).toMatch(/maksimal/);
+  });
+  it("tipe pdf -> pesan error format", () => {
+    expect(validasiStruk({ size: 100_000, type: "application/pdf" })).toMatch(/JPG atau PNG/);
   });
 });
