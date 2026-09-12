@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { movingAverage, predictNext7, statusBudget, formatRp } from "@/lib/core";
+import { movingAverage, predictNext7, statusBudget, formatRp, statusStok, validasiStokKeluar } from "@/lib/core";
 
 describe("movingAverage", () => {
   it("menghitung rata-rata dari 7 angka", () => {
@@ -40,5 +40,29 @@ describe("formatRp", () => {
   });
   it("memformat 0 jadi Rp0", () => {
     expect(formatRp(0)).toBe("Rp\u00A00");
+  });
+});
+
+describe("statusStok", () => {
+  it("sisa sama dengan minimum -> menipis", () => {
+    expect(statusStok(5, 5)).toBe("menipis");
+  });
+  it("sisa di bawah minimum -> menipis", () => {
+    expect(statusStok(2, 5)).toBe("menipis");
+  });
+  it("sisa di atas minimum -> aman", () => {
+    expect(statusStok(10, 5)).toBe("aman");
+  });
+});
+
+describe("validasiStokKeluar", () => {
+  it("qty <= sisa -> null (boleh)", () => {
+    expect(validasiStokKeluar(10, 5)).toBeNull();
+  });
+  it("qty pas sama dengan sisa -> null (boleh, pas habis)", () => {
+    expect(validasiStokKeluar(5, 5)).toBeNull();
+  });
+  it("qty > sisa -> pesan error", () => {
+    expect(validasiStokKeluar(3, 5)).toMatch(/tidak cukup/);
   });
 });

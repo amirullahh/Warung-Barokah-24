@@ -19,3 +19,12 @@ export function statusBudget(terpakai: number, pagu: number): "aman" | "hampir" 
 export function formatRp(n: number): string {
   return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(n);
 }
+
+export function statusStok(sisa: number, minimum: number): "aman" | "menipis" {
+  return sisa <= minimum ? "menipis" : "aman";
+}
+
+export function validasiStokKeluar(sisa: number, qty: number): string | null {
+  if (qty > sisa) return `Stok tidak cukup (sisa ${sisa}, minta keluar ${qty}).`;
+  return null;
+}
