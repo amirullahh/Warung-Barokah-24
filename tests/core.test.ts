@@ -1,5 +1,16 @@
 import { describe, it, expect } from "vitest";
-import { movingAverage, predictNext7, statusBudget, formatRp, statusStok, validasiStokKeluar, validasiStruk } from "@/lib/core";
+import {
+  movingAverage,
+  predictNext7,
+  statusBudget,
+  formatRp,
+  statusStok,
+  validasiStokKeluar,
+  validasiStruk,
+  rentangBulan,
+  ringkasanLabaRugi,
+  buatCsvLaporan,
+} from "@/lib/core";
 
 describe("movingAverage", () => {
   it("menghitung rata-rata dari 7 angka", () => {
@@ -79,5 +90,53 @@ describe("validasiStruk", () => {
   });
   it("tipe pdf -> pesan error format", () => {
     expect(validasiStruk({ size: 100_000, type: "application/pdf" })).toMatch(/JPG atau PNG/);
+  });
+});
+
+describe("rentangBulan", () => {
+  it("September 2026 (30 hari)", () => {
+    expect(rentangBulan("2026-09")).toEqual({ awal: "2026-09-01", akhir: "2026-09-30" });
+  });
+  it("Januari (31 hari)", () => {
+    expect(rentangBulan("2026-01")).toEqual({ awal: "2026-01-01", akhir: "2026-01-31" });
+  });
+  it("Februari non-kabisat 2026 (28 hari)", () => {
+    expect(rentangBulan("2026-02")).toEqual({ awal: "2026-02-01", akhir: "2026-02-28" });
+  });
+  it("Februari kabisat 2024 (29 hari)", () => {
+    expect(rentangBulan("2024-02")).toEqual({ awal: "2024-02-01", akhir: "2024-02-29" });
+  });
+});
+
+describe("ringkasanLabaRugi", () => {
+  it("sum masuk/keluar/laba dari beberapa hari", () => {
+    const hari = [
+      { masuk: 100_000, keluar: 40_000 },
+      { masuk: 50_000, keluar: 10_000 },
+    ];
+    expect(ringkasanLabaRugi(hari)).toEqual({ totalMasuk: 150_000, totalKeluar: 50_000, totalLaba: 100_000 });
+  });
+  it("array kosong -> semua 0", () => {
+    expect(ringkasanLabaRugi([])).toEqual({ totalMasuk: 0, totalKeluar: 0, totalLaba: 0 });
+  });
+});
+
+describe("buatCsvLaporan", () => {
+  const hari = [
+    { tanggal: "2026-09-01", masuk: 100_000, keluar: 40_000, laba: 60_000 },
+    { tanggal: "2026-09-02", masuk: 50_000, keluar: 10_000, laba: 40_000 },
+  ];
+  it("header + baris harian + baris total", () => {
+    const csv = buatCsvLaporan("2026-09", hari);
+    const baris = csv.split("\n");
+    expect(baris[0]).toBe("Tanggal,Masuk,Keluar,Laba");
+    expect(baris[1]).toBe("2026-09-01,100000,40000,60000");
+    expect(baris[2]).toBe("2026-09-02,50000,10000,40000");
+    expect(baris[3]).toBe("Total,150000,50000,100000");
+  });
+  it("tidak mengandung karakter non-breaking space (U+00A0) dari formatRp", () => {
+    const csv = buatCsvLaporan("2026-09", hari);
+    expect(csv).not.toContain(" ");
+    expect(csv).not.toContain("Rp");
   });
 });

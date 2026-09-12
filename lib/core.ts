@@ -41,3 +41,32 @@ export function validasiStruk(file: { size: number; type: string }): string | nu
   }
   return null;
 }
+
+export function rentangBulan(bulan: string): { awal: string; akhir: string } {
+  const [tahun, bln] = bulan.split("-").map(Number);
+  const awal = `${bulan}-01`;
+  const akhirDate = new Date(tahun, bln, 0); // day 0 = hari terakhir bulan `bln` (1-indexed)
+  const yyyy = akhirDate.getFullYear();
+  const mm = String(akhirDate.getMonth() + 1).padStart(2, "0");
+  const dd = String(akhirDate.getDate()).padStart(2, "0");
+  return { awal, akhir: `${yyyy}-${mm}-${dd}` };
+}
+
+export function ringkasanLabaRugi(
+  hari: { masuk: number; keluar: number }[]
+): { totalMasuk: number; totalKeluar: number; totalLaba: number } {
+  const totalMasuk = hari.reduce((a, h) => a + h.masuk, 0);
+  const totalKeluar = hari.reduce((a, h) => a + h.keluar, 0);
+  return { totalMasuk, totalKeluar, totalLaba: totalMasuk - totalKeluar };
+}
+
+export function buatCsvLaporan(
+  bulan: string,
+  hari: { tanggal: string; masuk: number; keluar: number; laba: number }[]
+): string {
+  const header = "Tanggal,Masuk,Keluar,Laba";
+  const baris = hari.map((h) => `${h.tanggal},${h.masuk},${h.keluar},${h.laba}`);
+  const { totalMasuk, totalKeluar, totalLaba } = ringkasanLabaRugi(hari);
+  const totalBaris = `Total,${totalMasuk},${totalKeluar},${totalLaba}`;
+  return [header, ...baris, totalBaris].join("\n");
+}
