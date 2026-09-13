@@ -7,11 +7,13 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Dark mode dikendalikan lewat class ".dark" di <html> (bukan cuma prefers-color-scheme),
+   supaya toggle manual (lib/theme.ts + ThemeToggle.tsx) bisa menang atas preferensi sistem
+   dan preferensinya bisa disimpan (localStorage). Skrip anti-FOUC di app/layout.tsx yang
+   pasang/lepas class ini sebelum halaman sempat ke-render. */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 body {

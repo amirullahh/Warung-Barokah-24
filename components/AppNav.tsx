@@ -6,7 +6,7 @@ import { Home, Receipt, Wallet, Package, HandCoins, FileText, type LucideIcon } 
 import { NAV_ITEMS, isNavActive } from "@/lib/nav";
 
 const ICON_MAP: Record<string, LucideIcon> = {
-  "/": Home,
+  "/dashboard": Home,
   "/transaksi": Receipt,
   "/budget": Wallet,
   "/stok": Package,

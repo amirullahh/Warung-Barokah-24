@@ -22,6 +22,13 @@ otomatis (beli stok = pengeluaran tercatat sekali klik).
 
 ## Fitur
 
+- **Landing page publik** — halaman `/` berisi penjelasan produk, daftar fitur, alur cara
+  kerja, dan ajakan Daftar/Masuk. Mendukung **dark mode** (toggle tersimpan per browser).
+- **Registrasi mandiri & status pending-assignment** — siapa pun bisa daftar akun sendiri
+  lewat `/register`, tapi akun baru **tidak otomatis** aktif: berstatus *menunggu
+  di-assign* sampai owner menambahkannya ke `anggota_usaha` (lih. bagian
+  [Alur Registrasi](#alur-registrasi--status-akun) di bawah). Ini sengaja — studi kasus ini
+  tetap satu UMKM, bukan platform multi-tenant.
 - **Autentikasi & multi-role** — login lewat Supabase Auth, role `owner` dan `kasir` per
   usaha (`anggota_usaha`), hak akses ditegakkan di level database lewat Row Level Security,
   bukan hanya disembunyikan di UI.
@@ -65,9 +72,11 @@ Browser → Next.js (Server/Client Components) → Supabase JS (anon key + RLS) 
 Semua tabel bisnis mengaktifkan Row Level Security; akses dibatasi lewat fungsi
 `is_member()`/`is_owner()` (disimpan di schema `private`, tidak diekspos lewat REST API) yang
 dipanggil dari policy per tabel. Logika murni yang mudah diuji (moving average, status
-budget, format rupiah, generator data seed) dipisah ke `lib/core.ts` dan `lib/seed/` sebagai
-fungsi pure tanpa side effect. Detail keputusan desain ada di setiap `DESIGN-*.md` /
-`PLAN-*.md` pada riwayat commit proyek ini.
+budget, format rupiah, generator data seed, status keanggotaan, tema awal dark mode)
+dipisah ke `lib/core.ts`, `lib/seed/`, `lib/auth/`, dan `lib/theme.ts` sebagai fungsi pure
+tanpa side effect. Detail keputusan desain ada di setiap `DESIGN-*.md` / `PLAN-*.md` pada
+riwayat commit proyek ini — termasuk `DESIGN-10-LANDING-REGISTER-DARKMODE.md` untuk landing
+page, alur registrasi, dan dark mode.
 
 ### Skema database (Postgres, `supabase/schema.sql`)
 
@@ -75,6 +84,26 @@ fungsi pure tanpa side effect. Detail keputusan desain ada di setiap `DESIGN-*.m
 `produk`, `stok_gerak` — lengkap dengan RLS policy, view agregasi (`v_laba_harian`,
 `v_budget_realisasi`, `v_stok_sisa`), dan trigger pembatas kolom untuk pelunasan
 hutang/piutang oleh kasir.
+
+## Alur Registrasi & Status Akun
+
+```
+Daftar (/register) → belum di-assign → /menunggu-assignment → owner assign → /dashboard
+```
+
+1. User mengisi form di `/register` (nama, email, password). Kalau project Supabase
+   mewajibkan konfirmasi email, dia akan diminta cek inbox dulu sebelum bisa login.
+2. Begitu login pertama kali, dia diarahkan ke `/menunggu-assignment` — halaman ini tampil
+   selama dia **belum** punya baris di tabel `anggota_usaha`.
+3. **Owner** menambahkan user tersebut lewat Supabase Dashboard → **Table Editor** →
+   `anggota_usaha` → tambah baris baru: `usaha_id` (usaha yang sudah ada), `user_id` (UUID
+   user itu, dilihat di Authentication → Users), `role` (`owner` atau `kasir`).
+4. Setelah baris itu ada, user otomatis diarahkan ke `/dashboard` begitu dia me-refresh atau
+   membuka lagi halaman menunggu tadi.
+
+Tidak ada UI admin khusus untuk langkah 3 di dalam aplikasi ini — konsisten dengan
+bagaimana 2 akun demo (`owner@barokah.test`, `kasir@barokah.test`) sudah dibuat sejak awal
+proyek lewat Supabase Dashboard, bukan lewat form di aplikasi.
 
 ## Menjalankan di Lokal
 
