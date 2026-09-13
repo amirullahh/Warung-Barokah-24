@@ -141,7 +141,7 @@ export function CatatStokForm({ usahaId, mode, produkList, kategoriList = [] }: 
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="h-11 rounded-lg border border-amber-600 px-4 font-medium text-amber-700"
+        className="h-11 rounded-lg border border-brand-600 px-4 font-medium text-brand-700 transition hover:bg-brand-50 dark:border-brand-400 dark:text-brand-300 dark:hover:bg-neutral-800"
       >
         {label}
       </button>
@@ -149,119 +149,135 @@ export function CatatStokForm({ usahaId, mode, produkList, kategoriList = [] }: 
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3 rounded-2xl bg-white p-4 shadow">
-      <h2 className="font-semibold text-amber-900">{label}</h2>
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={label}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) setOpen(false);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") setOpen(false);
+      }}
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="max-h-[90vh] w-full max-w-sm space-y-3 overflow-y-auto rounded-2xl bg-white p-4 shadow-xl dark:bg-neutral-900"
+      >
+        <h2 className="font-semibold text-brand-900 dark:text-brand-200">{label}</h2>
 
-      <div>
-        <label htmlFor={`${mode}-produk`} className="mb-1 block text-sm font-medium">Produk</label>
-        <select
-          id={`${mode}-produk`}
-          value={produkId}
-          onChange={(e) => setProdukId(e.target.value)}
-          className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
-        >
-          <option value="">Pilih produk</option>
-          {produkList.map((p) => (
-            <option key={p.id} value={p.id}>{p.nama} (sisa {p.sisa})</option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label htmlFor={`${mode}-qty`} className="mb-1 block text-sm font-medium">Jumlah</label>
-        <input
-          id={`${mode}-qty`}
-          type="number"
-          min={1}
-          value={qty}
-          onChange={(e) => setQty(e.target.value)}
-          className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
-        />
-      </div>
-
-      <div>
-        <label htmlFor={`${mode}-tanggal`} className="mb-1 block text-sm font-medium">Tanggal</label>
-        <input
-          id={`${mode}-tanggal`}
-          type="date"
-          value={tanggal}
-          onChange={(e) => setTanggal(e.target.value)}
-          className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
-        />
-      </div>
-
-      <div>
-        <label htmlFor={`${mode}-keterangan`} className="mb-1 block text-sm font-medium">Keterangan (opsional)</label>
-        <input
-          id={`${mode}-keterangan`}
-          value={keterangan}
-          onChange={(e) => setKeterangan(e.target.value)}
-          className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
-        />
-      </div>
-
-      {mode === "masuk" && (
-        <div className="space-y-3 rounded-lg bg-amber-50 p-3">
-          <label className="flex items-center gap-2 text-sm font-medium">
-            <input
-              type="checkbox"
-              checked={buatPengeluaran}
-              onChange={(e) => setBuatPengeluaran(e.target.checked)}
-              className="h-5 w-5"
-            />
-            Beli stok → buat pengeluaran otomatis
-          </label>
-
-          {buatPengeluaran && (
-            <>
-              <div>
-                <label htmlFor="masuk-nominal" className="mb-1 block text-sm font-medium">Nominal (Rp)</label>
-                <input
-                  id="masuk-nominal"
-                  type="number"
-                  min={1}
-                  value={nominal}
-                  onChange={(e) => setNominal(e.target.value)}
-                  className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                />
-              </div>
-              <div>
-                <label htmlFor="masuk-kategori" className="mb-1 block text-sm font-medium">Kategori pengeluaran</label>
-                <select
-                  id="masuk-kategori"
-                  value={kategoriId}
-                  onChange={(e) => setKategoriId(e.target.value)}
-                  className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                >
-                  <option value="">Pilih kategori</option>
-                  {kategoriList.map((k) => (
-                    <option key={k.id} value={k.id}>{k.nama}</option>
-                  ))}
-                </select>
-              </div>
-            </>
-          )}
+        <div>
+          <label htmlFor={`${mode}-produk`} className="mb-1 block text-sm font-medium dark:text-neutral-200">Produk</label>
+          <select
+            id={`${mode}-produk`}
+            value={produkId}
+            onChange={(e) => setProdukId(e.target.value)}
+            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+          >
+            <option value="">Pilih produk</option>
+            {produkList.map((p) => (
+              <option key={p.id} value={p.id}>{p.nama} (sisa {p.sisa})</option>
+            ))}
+          </select>
         </div>
-      )}
 
-      {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
+        <div>
+          <label htmlFor={`${mode}-qty`} className="mb-1 block text-sm font-medium dark:text-neutral-200">Jumlah</label>
+          <input
+            id={`${mode}-qty`}
+            type="number"
+            min={1}
+            value={qty}
+            onChange={(e) => setQty(e.target.value)}
+            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+          />
+        </div>
 
-      <div className="flex gap-2">
-        <button
-          type="submit"
-          disabled={loading}
-          className="h-11 flex-1 rounded-lg bg-amber-600 font-medium text-white disabled:opacity-60"
-        >
-          {loading ? "Menyimpan..." : "Simpan"}
-        </button>
-        <button
-          type="button"
-          onClick={() => setOpen(false)}
-          className="h-11 rounded-lg border border-neutral-300 px-4 font-medium text-neutral-700"
-        >
-          Batal
-        </button>
-      </div>
-    </form>
+        <div>
+          <label htmlFor={`${mode}-tanggal`} className="mb-1 block text-sm font-medium dark:text-neutral-200">Tanggal</label>
+          <input
+            id={`${mode}-tanggal`}
+            type="date"
+            value={tanggal}
+            onChange={(e) => setTanggal(e.target.value)}
+            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+          />
+        </div>
+
+        <div>
+          <label htmlFor={`${mode}-keterangan`} className="mb-1 block text-sm font-medium dark:text-neutral-200">Keterangan (opsional)</label>
+          <input
+            id={`${mode}-keterangan`}
+            value={keterangan}
+            onChange={(e) => setKeterangan(e.target.value)}
+            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+          />
+        </div>
+
+        {mode === "masuk" && (
+          <div className="space-y-3 rounded-lg bg-brand-50 p-3 dark:bg-neutral-800">
+            <label className="flex items-center gap-2 text-sm font-medium dark:text-neutral-200">
+              <input
+                type="checkbox"
+                checked={buatPengeluaran}
+                onChange={(e) => setBuatPengeluaran(e.target.checked)}
+                className="h-5 w-5"
+              />
+              Beli stok → buat pengeluaran otomatis
+            </label>
+
+            {buatPengeluaran && (
+              <>
+                <div>
+                  <label htmlFor="masuk-nominal" className="mb-1 block text-sm font-medium dark:text-neutral-200">Nominal (Rp)</label>
+                  <input
+                    id="masuk-nominal"
+                    type="number"
+                    min={1}
+                    value={nominal}
+                    onChange={(e) => setNominal(e.target.value)}
+                    className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="masuk-kategori" className="mb-1 block text-sm font-medium dark:text-neutral-200">Kategori pengeluaran</label>
+                  <select
+                    id="masuk-kategori"
+                    value={kategoriId}
+                    onChange={(e) => setKategoriId(e.target.value)}
+                    className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
+                  >
+                    <option value="">Pilih kategori</option>
+                    {kategoriList.map((k) => (
+                      <option key={k.id} value={k.id}>{k.nama}</option>
+                    ))}
+                  </select>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {error && <p role="alert" className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+
+        <div className="flex gap-2">
+          <button
+            type="submit"
+            disabled={loading}
+            className="h-11 flex-1 rounded-lg bg-brand-600 font-medium text-white transition hover:bg-brand-700 disabled:opacity-60"
+          >
+            {loading ? "Menyimpan..." : "Simpan"}
+          </button>
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="h-11 rounded-lg border border-neutral-300 px-4 font-medium text-neutral-700 dark:border-neutral-700 dark:text-neutral-200"
+          >
+            Batal
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

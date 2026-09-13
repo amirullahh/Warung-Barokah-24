@@ -75,7 +75,7 @@ export function LunaskanForm({ usahaId, item, kategoriList }: LunaskanFormProps)
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="h-9 rounded-lg bg-amber-600 px-3 text-sm font-medium text-white"
+        className="h-9 rounded-lg bg-brand-600 px-3 text-sm font-medium text-white transition hover:bg-brand-700"
       >
         Lunaskan
       </button>
@@ -91,22 +91,22 @@ export function LunaskanForm({ usahaId, item, kategoriList }: LunaskanFormProps)
       onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
       onKeyDown={(e) => { if (e.key === "Escape") setOpen(false); }}
     >
-      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-3 rounded-2xl bg-white p-4 shadow">
-        <h2 className="font-semibold text-amber-900">
+      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-3 rounded-2xl bg-white p-4 shadow-xl dark:bg-neutral-900">
+        <h2 className="font-semibold text-brand-900 dark:text-brand-200">
           Lunaskan {item.arah} — {item.pihak}
         </h2>
-        <p className="text-sm text-neutral-600">
+        <p className="text-sm text-neutral-600 dark:text-neutral-400">
           Akan tercatat sebagai transaksi {tipeTransaksi === "masuk" ? "pemasukan" : "pengeluaran"}
           {" "}sebesar Rp{item.nominal.toLocaleString("id-ID")}.
         </p>
 
         <div>
-          <label htmlFor="lunas-kategori" className="mb-1 block text-sm font-medium">Kategori</label>
+          <label htmlFor="lunas-kategori" className="mb-1 block text-sm font-medium dark:text-neutral-200">Kategori</label>
           <select
             id="lunas-kategori"
             value={kategoriId}
             onChange={(e) => setKategoriId(e.target.value)}
-            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
           >
             <option value="">Pilih kategori</option>
             {kategoriTersedia.map((k) => (
@@ -116,23 +116,23 @@ export function LunaskanForm({ usahaId, item, kategoriList }: LunaskanFormProps)
         </div>
 
         <div>
-          <label htmlFor="lunas-tanggal" className="mb-1 block text-sm font-medium">Tanggal</label>
+          <label htmlFor="lunas-tanggal" className="mb-1 block text-sm font-medium dark:text-neutral-200">Tanggal</label>
           <input
             id="lunas-tanggal"
             type="date"
             value={tanggal}
             onChange={(e) => setTanggal(e.target.value)}
-            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
           />
         </div>
 
-        {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
+        {error && <p role="alert" className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
         <div className="flex gap-2">
-          <button type="submit" disabled={loading} className="h-11 flex-1 rounded-lg bg-amber-600 font-medium text-white disabled:opacity-60">
+          <button type="submit" disabled={loading} className="h-11 flex-1 rounded-lg bg-brand-600 font-medium text-white transition hover:bg-brand-700 disabled:opacity-60">
             {loading ? "Menyimpan..." : "Konfirmasi lunas"}
           </button>
-          <button type="button" onClick={() => setOpen(false)} className="h-11 rounded-lg border border-neutral-300 px-4 font-medium text-neutral-700">
+          <button type="button" onClick={() => setOpen(false)} className="h-11 rounded-lg border border-neutral-300 px-4 font-medium text-neutral-700 dark:border-neutral-700 dark:text-neutral-200">
             Batal
           </button>
         </div>

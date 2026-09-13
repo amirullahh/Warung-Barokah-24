@@ -90,7 +90,7 @@ export function TambahTransaksiForm({ usahaId, kategoriList }: TambahTransaksiFo
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="h-11 rounded-lg bg-amber-600 px-4 font-medium text-white"
+        className="h-11 rounded-lg bg-brand-600 px-4 font-medium text-white transition hover:bg-brand-700"
       >
         + Transaksi
       </button>
@@ -112,18 +112,18 @@ export function TambahTransaksiForm({ usahaId, kategoriList }: TambahTransaksiFo
     >
       <form
         onSubmit={handleSubmit}
-        className="max-h-[90vh] w-full max-w-md space-y-3 overflow-y-auto rounded-2xl bg-white p-4 shadow"
+        className="max-h-[90vh] w-full max-w-md space-y-3 overflow-y-auto rounded-2xl bg-white p-4 shadow-xl dark:bg-neutral-900"
       >
-        <h2 className="font-semibold text-amber-900">Transaksi baru</h2>
+        <h2 className="font-semibold text-brand-900 dark:text-brand-200">Transaksi baru</h2>
 
         <div>
-          <span className="mb-1 block text-sm font-medium">Tipe</span>
+          <span className="mb-1 block text-sm font-medium dark:text-neutral-200">Tipe</span>
           <div className="flex gap-2">
             <button
               type="button"
               onClick={() => { setTipe("masuk"); setKategoriId(""); }}
               aria-pressed={tipe === "masuk"}
-              className={`h-11 flex-1 rounded-lg font-medium ${tipe === "masuk" ? "bg-emerald-600 text-white" : "border border-neutral-300 text-neutral-700"}`}
+              className={`h-11 flex-1 rounded-lg font-medium ${tipe === "masuk" ? "bg-emerald-600 text-white" : "border border-neutral-300 text-neutral-700 dark:border-neutral-700 dark:text-neutral-300"}`}
             >
               Pemasukan
             </button>
@@ -131,7 +131,7 @@ export function TambahTransaksiForm({ usahaId, kategoriList }: TambahTransaksiFo
               type="button"
               onClick={() => { setTipe("keluar"); setKategoriId(""); }}
               aria-pressed={tipe === "keluar"}
-              className={`h-11 flex-1 rounded-lg font-medium ${tipe === "keluar" ? "bg-red-600 text-white" : "border border-neutral-300 text-neutral-700"}`}
+              className={`h-11 flex-1 rounded-lg font-medium ${tipe === "keluar" ? "bg-red-600 text-white" : "border border-neutral-300 text-neutral-700 dark:border-neutral-700 dark:text-neutral-300"}`}
             >
               Pengeluaran
             </button>
@@ -139,23 +139,23 @@ export function TambahTransaksiForm({ usahaId, kategoriList }: TambahTransaksiFo
         </div>
 
         <div>
-          <label htmlFor="trx-tanggal" className="mb-1 block text-sm font-medium">Tanggal</label>
+          <label htmlFor="trx-tanggal" className="mb-1 block text-sm font-medium dark:text-neutral-200">Tanggal</label>
           <input
             id="trx-tanggal"
             type="date"
             value={tanggal}
             onChange={(e) => setTanggal(e.target.value)}
-            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
           />
         </div>
 
         <div>
-          <label htmlFor="trx-kategori" className="mb-1 block text-sm font-medium">Kategori</label>
+          <label htmlFor="trx-kategori" className="mb-1 block text-sm font-medium dark:text-neutral-200">Kategori</label>
           <select
             id="trx-kategori"
             value={kategoriId}
             onChange={(e) => setKategoriId(e.target.value)}
-            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
           >
             <option value="">Pilih kategori</option>
             {kategoriTersedia.map((k) => (
@@ -165,36 +165,36 @@ export function TambahTransaksiForm({ usahaId, kategoriList }: TambahTransaksiFo
         </div>
 
         <div>
-          <label htmlFor="trx-nominal" className="mb-1 block text-sm font-medium">Nominal (Rp)</label>
+          <label htmlFor="trx-nominal" className="mb-1 block text-sm font-medium dark:text-neutral-200">Nominal (Rp)</label>
           <MoneyInput id="trx-nominal" value={nominal} onChange={setNominal} placeholder="0" />
         </div>
 
         <div>
-          <label htmlFor="trx-keterangan" className="mb-1 block text-sm font-medium">Keterangan (opsional)</label>
+          <label htmlFor="trx-keterangan" className="mb-1 block text-sm font-medium dark:text-neutral-200">Keterangan (opsional)</label>
           <input
             id="trx-keterangan"
             value={keterangan}
             onChange={(e) => setKeterangan(e.target.value)}
-            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
           />
         </div>
 
         <ReceiptUpload onFileSelected={setFile} />
 
-        {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
+        {error && <p role="alert" className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
         <div className="flex gap-2">
           <button
             type="submit"
             disabled={loading}
-            className="h-11 flex-1 rounded-lg bg-amber-600 font-medium text-white disabled:opacity-60"
+            className="h-11 flex-1 rounded-lg bg-brand-600 font-medium text-white transition hover:bg-brand-700 disabled:opacity-60"
           >
             {loading ? "Menyimpan..." : "Simpan"}
           </button>
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="h-11 rounded-lg border border-neutral-300 px-4 font-medium text-neutral-700"
+            className="h-11 rounded-lg border border-neutral-300 px-4 font-medium text-neutral-700 dark:border-neutral-700 dark:text-neutral-200"
           >
             Batal
           </button>

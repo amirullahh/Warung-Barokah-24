@@ -37,7 +37,7 @@ export default async function StokPage() {
   return (
     <main className="space-y-6 p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold text-amber-900">Stok</h1>
+        <h1 className="text-2xl font-bold text-brand-900 dark:text-brand-200">Stok</h1>
         <div className="flex flex-wrap gap-2">
           <CatatStokForm usahaId={usahaId} mode="masuk" produkList={produkList} kategoriList={kategoriKeluar ?? []} />
           <CatatStokForm usahaId={usahaId} mode="keluar" produkList={produkList} />
@@ -46,11 +46,11 @@ export default async function StokPage() {
       </div>
 
       {!stokSisa || stokSisa.length === 0 ? (
-        <p className="text-neutral-600">Belum ada produk. Tambah produk dulu untuk mulai catat stok.</p>
+        <p className="text-neutral-600 dark:text-neutral-400">Belum ada produk. Tambah produk dulu untuk mulai catat stok.</p>
       ) : (
-        <div className="overflow-x-auto rounded-2xl bg-white shadow">
+        <div className="overflow-x-auto rounded-2xl bg-white shadow dark:bg-neutral-900">
           <table className="w-full text-left text-sm">
-            <thead className="bg-amber-50 text-amber-900">
+            <thead className="bg-brand-50 text-brand-900 dark:bg-neutral-800 dark:text-brand-200">
               <tr>
                 <th className="p-3">Produk</th>
                 <th className="p-3">Satuan</th>
@@ -61,11 +61,11 @@ export default async function StokPage() {
             </thead>
             <tbody>
               {stokSisa.map((s) => (
-                <tr key={s.produk_id} className="border-t border-neutral-100">
-                  <td className="p-3 font-medium">{s.nama}</td>
-                  <td className="p-3">{s.satuan}</td>
-                  <td className="p-3">{s.sisa}</td>
-                  <td className="p-3">{s.stok_minimum}</td>
+                <tr key={s.produk_id} className="border-t border-neutral-100 dark:border-neutral-800">
+                  <td className="p-3 font-medium text-neutral-900 dark:text-neutral-100">{s.nama}</td>
+                  <td className="p-3 text-neutral-900 dark:text-neutral-100">{s.satuan}</td>
+                  <td className="p-3 text-neutral-900 dark:text-neutral-100">{s.sisa}</td>
+                  <td className="p-3 text-neutral-900 dark:text-neutral-100">{s.stok_minimum}</td>
                   <td className="p-3">
                     <StokBadge status={s.menipis ? "menipis" : "aman"} />
                   </td>

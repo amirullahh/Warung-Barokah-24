@@ -102,11 +102,11 @@ export default async function DashboardPage() {
   return (
     <main className="space-y-6 p-6">
       <div>
-        <h1 className="text-2xl font-bold text-amber-900">
+        <h1 className="text-2xl font-bold text-brand-900 dark:text-brand-200">
           Selamat datang, {profile?.nama ?? "Pengguna"}
           {anggota?.role ? ` (${anggota.role})` : ""}
         </h1>
-        <p className="text-sm text-neutral-600">Ringkasan bisnis Warung Madura Barokah 24.</p>
+        <p className="text-sm text-neutral-600 dark:text-neutral-400">Ringkasan bisnis Warung Madura Barokah 24.</p>
       </div>
 
       <RingkasanCard items={ringkasan} />
@@ -122,14 +122,14 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-2xl bg-white p-4 shadow">
-          <h2 className="mb-2 font-semibold text-amber-900">Top kategori pengeluaran (30 hari)</h2>
+        <div className="rounded-2xl bg-white p-4 shadow dark:bg-neutral-900">
+          <h2 className="mb-2 font-semibold text-brand-900 dark:text-brand-200">Top kategori pengeluaran (30 hari)</h2>
           {topKategori.length === 0 ? (
-            <p className="text-sm text-neutral-600">Belum ada pengeluaran tercatat.</p>
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">Belum ada pengeluaran tercatat.</p>
           ) : (
             <ol className="space-y-2">
               {topKategori.map((k) => (
-                <li key={k.nama} className="flex items-center justify-between text-sm">
+                <li key={k.nama} className="flex items-center justify-between text-sm text-neutral-900 dark:text-neutral-100">
                   <span>{k.nama}</span>
                   <span className="font-medium">{formatRp(k.total)}</span>
                 </li>
@@ -138,16 +138,16 @@ export default async function DashboardPage() {
           )}
         </div>
 
-        <div className="rounded-2xl bg-white p-4 shadow">
-          <h2 className="mb-2 font-semibold text-amber-900">Transaksi terakhir</h2>
+        <div className="rounded-2xl bg-white p-4 shadow dark:bg-neutral-900">
+          <h2 className="mb-2 font-semibold text-brand-900 dark:text-brand-200">Transaksi terakhir</h2>
           {!transaksiTerakhir || transaksiTerakhir.length === 0 ? (
-            <p className="text-sm text-neutral-600">Belum ada transaksi tercatat.</p>
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">Belum ada transaksi tercatat.</p>
           ) : (
             <ul className="space-y-2">
               {transaksiTerakhir.map((t) => (
-                <li key={t.id} className="flex items-center justify-between text-sm">
+                <li key={t.id} className="flex items-center justify-between text-sm text-neutral-900 dark:text-neutral-100">
                   <span>{namaKategori.get(t.kategori_id) ?? "Kategori"} · {t.tanggal}</span>
-                  <span className={`font-medium ${t.tipe === "masuk" ? "text-emerald-700" : "text-red-700"}`}>
+                  <span className={`font-medium ${t.tipe === "masuk" ? "text-emerald-700 dark:text-emerald-400" : "text-red-700 dark:text-red-400"}`}>
                     {t.tipe === "masuk" ? "+" : "-"}{formatRp(t.nominal)}
                   </span>
                 </li>

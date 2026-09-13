@@ -8,9 +8,9 @@ type BudgetBarProps = {
 const STATUS_LABEL = { aman: "Aman", hampir: "Hampir", over: "Over" } as const;
 const STATUS_BAR_COLOR = { aman: "bg-emerald-500", hampir: "bg-amber-500", over: "bg-red-600" } as const;
 const STATUS_BADGE_COLOR = {
-  aman: "bg-emerald-100 text-emerald-700",
-  hampir: "bg-amber-100 text-amber-800",
-  over: "bg-red-100 text-red-700",
+  aman: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
+  hampir: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
+  over: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300",
 } as const;
 
 export function BudgetBar({ terpakai, pagu }: BudgetBarProps) {
@@ -20,13 +20,13 @@ export function BudgetBar({ terpakai, pagu }: BudgetBarProps) {
   return (
     <div className="space-y-1">
       <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-        <span>{formatRp(terpakai)} / {formatRp(pagu)}</span>
+        <span className="text-neutral-900 dark:text-neutral-100">{formatRp(terpakai)} / {formatRp(pagu)}</span>
         <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS_BADGE_COLOR[status]}`}>
           {STATUS_LABEL[status]}
         </span>
       </div>
       <div
-        className="h-3 w-full overflow-hidden rounded-full bg-neutral-200"
+        className="h-3 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700"
         role="progressbar"
         aria-valuenow={persen}
         aria-valuemin={0}

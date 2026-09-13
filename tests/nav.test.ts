@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isNavActive, NAV_ITEMS } from "@/lib/nav";
+import { isNavActive, NAV_ITEMS, navItemsUntukRole } from "@/lib/nav";
 
 describe("isNavActive", () => {
   it("href root (\"/\") aktif hanya kalau path persis root (dipakai landing page, bukan NAV_ITEMS lagi)", () => {
@@ -35,5 +35,21 @@ describe("NAV_ITEMS", () => {
       "/hutang",
       "/laporan",
     ]);
+  });
+});
+
+describe("navItemsUntukRole", () => {
+  it("owner dapat tambahan menu Pengaturan di akhir", () => {
+    const hrefs = navItemsUntukRole("owner").map((n) => n.href);
+    expect(hrefs).toEqual(["/dashboard", "/transaksi", "/budget", "/stok", "/hutang", "/laporan", "/pengaturan"]);
+  });
+
+  it("kasir tidak dapat menu Pengaturan", () => {
+    const hrefs = navItemsUntukRole("kasir").map((n) => n.href);
+    expect(hrefs).toEqual(NAV_ITEMS.map((n) => n.href));
+  });
+
+  it("role undefined (belum diketahui) juga tidak dapat menu Pengaturan", () => {
+    expect(navItemsUntukRole(undefined)).toEqual(NAV_ITEMS);
   });
 });

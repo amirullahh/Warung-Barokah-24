@@ -313,3 +313,37 @@ with check (bucket_id = 'struk' and private.is_member((storage.foldername(name))
 
 create policy "member read struk" on storage.objects for select
 using (bucket_id = 'struk' and private.is_member((storage.foldername(name))[1]::uuid));
+
+-- ============================================
+-- Migrasi Pengaturan (profil warung: nama/alamat/jam operasional/logo), 2026-09-13.
+-- Owner sebelumnya tidak bisa mengubah profil warungnya sendiri sama sekali dari UI (cuma
+-- lewat SQL Editor manual) — halaman baru /pengaturan (owner-only) menutup gap ini.
+-- Jalankan blok ini SETELAH semua di atas, di project Supabase yang sudah live.
+-- ============================================
+--
+-- 1) Kolom logo_url: URL publik logo warung (hasil getPublicUrl() dari bucket "logo-usaha"
+--    di bawah). Nullable — warung boleh belum punya logo.
+alter table usaha add column if not exists logo_url text;
+
+-- 2) Bucket "logo-usaha" (PUBLIC, beda dari bucket "struk" yang private) — logo warung
+--    ditampilkan di sidebar semua anggota tanpa perlu signed URL, jadi bucket public lebih
+--    sederhana (tidak perlu policy select sama sekali, download langsung lewat endpoint
+--    /storage/v1/object/public/). Path upload konvensi: {usaha_id}/logo (selalu nama file
+--    "logo" + upsert:true dari PengaturanUsahaForm.tsx, jadi ganti logo = timpa file yang
+--    sama, bukan menumpuk file baru terus).
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('logo-usaha', 'logo-usaha', true, 2097152, array['image/jpeg','image/png'])
+on conflict (id) do nothing;
+
+-- 3) Hanya owner yang boleh upload/ubah/hapus logo warungnya sendiri. Insert & update
+--    dua-duanya perlu policy karena upload dengan upsert:true bisa jadi INSERT (logo
+--    pertama kali) atau UPDATE (ganti logo yang sudah ada), tergantung filenya sudah ada
+--    atau belum.
+create policy "owner upload logo usaha" on storage.objects for insert
+with check (bucket_id = 'logo-usaha' and private.is_owner((storage.foldername(name))[1]::uuid));
+
+create policy "owner update logo usaha" on storage.objects for update
+using (bucket_id = 'logo-usaha' and private.is_owner((storage.foldername(name))[1]::uuid));
+
+create policy "owner delete logo usaha" on storage.objects for delete
+using (bucket_id = 'logo-usaha' and private.is_owner((storage.foldername(name))[1]::uuid));

@@ -35,7 +35,7 @@ export function ReceiptUpload({ onFileSelected }: ReceiptUploadProps) {
 
   return (
     <div>
-      <label htmlFor="struk-file" className="mb-1 block text-sm font-medium">
+      <label htmlFor="struk-file" className="mb-1 block text-sm font-medium dark:text-neutral-200">
         Foto struk (opsional)
       </label>
       <input
@@ -44,10 +44,10 @@ export function ReceiptUpload({ onFileSelected }: ReceiptUploadProps) {
         type="file"
         accept="image/jpeg,image/png"
         onChange={handleChange}
-        className="block w-full text-sm"
+        className="block w-full text-sm dark:text-neutral-300"
       />
-      {namaFile && <p className="mt-1 text-sm text-neutral-600">Terpilih: {namaFile}</p>}
-      {error && <p role="alert" className="mt-1 text-sm text-red-600">{error}</p>}
+      {namaFile && <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">Terpilih: {namaFile}</p>}
+      {error && <p role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>}
     </div>
   );
 }

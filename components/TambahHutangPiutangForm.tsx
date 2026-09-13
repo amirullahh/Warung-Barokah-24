@@ -62,7 +62,7 @@ export function TambahHutangPiutangForm({ usahaId }: { usahaId: string }) {
 
   if (!open) {
     return (
-      <button type="button" onClick={() => setOpen(true)} className="h-11 rounded-lg bg-amber-600 px-4 font-medium text-white">
+      <button type="button" onClick={() => setOpen(true)} className="h-11 rounded-lg bg-brand-600 px-4 font-medium text-white transition hover:bg-brand-700">
         + Hutang/Piutang
       </button>
     );
@@ -77,17 +77,17 @@ export function TambahHutangPiutangForm({ usahaId }: { usahaId: string }) {
       onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
       onKeyDown={(e) => { if (e.key === "Escape") setOpen(false); }}
     >
-      <form onSubmit={handleSubmit} className="w-full max-w-md space-y-3 rounded-2xl bg-white p-4 shadow">
-        <h2 className="font-semibold text-amber-900">Hutang/Piutang baru</h2>
+      <form onSubmit={handleSubmit} className="w-full max-w-md space-y-3 rounded-2xl bg-white p-4 shadow-xl dark:bg-neutral-900">
+        <h2 className="font-semibold text-brand-900 dark:text-brand-200">Hutang/Piutang baru</h2>
 
         <div>
-          <span className="mb-1 block text-sm font-medium">Jenis</span>
+          <span className="mb-1 block text-sm font-medium dark:text-neutral-200">Jenis</span>
           <div className="flex gap-2">
             <button
               type="button"
               onClick={() => setArah("piutang")}
               aria-pressed={arah === "piutang"}
-              className={`h-11 flex-1 rounded-lg font-medium ${arah === "piutang" ? "bg-emerald-600 text-white" : "border border-neutral-300 text-neutral-700"}`}
+              className={`h-11 flex-1 rounded-lg font-medium ${arah === "piutang" ? "bg-emerald-600 text-white" : "border border-neutral-300 text-neutral-700 dark:border-neutral-700 dark:text-neutral-300"}`}
             >
               Piutang (orang berutang ke kita)
             </button>
@@ -95,7 +95,7 @@ export function TambahHutangPiutangForm({ usahaId }: { usahaId: string }) {
               type="button"
               onClick={() => setArah("hutang")}
               aria-pressed={arah === "hutang"}
-              className={`h-11 flex-1 rounded-lg font-medium ${arah === "hutang" ? "bg-red-600 text-white" : "border border-neutral-300 text-neutral-700"}`}
+              className={`h-11 flex-1 rounded-lg font-medium ${arah === "hutang" ? "bg-red-600 text-white" : "border border-neutral-300 text-neutral-700 dark:border-neutral-700 dark:text-neutral-300"}`}
             >
               Hutang (kita berutang)
             </button>
@@ -103,38 +103,38 @@ export function TambahHutangPiutangForm({ usahaId }: { usahaId: string }) {
         </div>
 
         <div>
-          <label htmlFor="hp-pihak" className="mb-1 block text-sm font-medium">Nama pihak</label>
+          <label htmlFor="hp-pihak" className="mb-1 block text-sm font-medium dark:text-neutral-200">Nama pihak</label>
           <input
             id="hp-pihak"
             value={pihak}
             onChange={(e) => setPihak(e.target.value)}
-            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
           />
         </div>
 
         <div>
-          <label htmlFor="hp-nominal" className="mb-1 block text-sm font-medium">Nominal (Rp)</label>
+          <label htmlFor="hp-nominal" className="mb-1 block text-sm font-medium dark:text-neutral-200">Nominal (Rp)</label>
           <MoneyInput id="hp-nominal" value={nominal} onChange={setNominal} placeholder="0" />
         </div>
 
         <div>
-          <label htmlFor="hp-tempo" className="mb-1 block text-sm font-medium">Jatuh tempo (opsional)</label>
+          <label htmlFor="hp-tempo" className="mb-1 block text-sm font-medium dark:text-neutral-200">Jatuh tempo (opsional)</label>
           <input
             id="hp-tempo"
             type="date"
             value={jatuhTempo}
             onChange={(e) => setJatuhTempo(e.target.value)}
-            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
           />
         </div>
 
-        {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
+        {error && <p role="alert" className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
         <div className="flex gap-2">
-          <button type="submit" disabled={loading} className="h-11 flex-1 rounded-lg bg-amber-600 font-medium text-white disabled:opacity-60">
+          <button type="submit" disabled={loading} className="h-11 flex-1 rounded-lg bg-brand-600 font-medium text-white transition hover:bg-brand-700 disabled:opacity-60">
             {loading ? "Menyimpan..." : "Simpan"}
           </button>
-          <button type="button" onClick={() => setOpen(false)} className="h-11 rounded-lg border border-neutral-300 px-4 font-medium text-neutral-700">
+          <button type="button" onClick={() => setOpen(false)} className="h-11 rounded-lg border border-neutral-300 px-4 font-medium text-neutral-700 dark:border-neutral-700 dark:text-neutral-200">
             Batal
           </button>
         </div>

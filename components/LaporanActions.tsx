@@ -32,14 +32,14 @@ export function LaporanActions({ bulan, hari }: LaporanActionsProps) {
       <button
         type="button"
         onClick={handleExportCsv}
-        className="h-11 rounded-lg border border-amber-600 px-4 font-medium text-amber-700"
+        className="h-11 rounded-lg border border-brand-600 px-4 font-medium text-brand-700 transition hover:bg-brand-50 dark:border-brand-400 dark:text-brand-300 dark:hover:bg-neutral-800"
       >
         Export CSV
       </button>
       <button
         type="button"
         onClick={handleCetakPdf}
-        className="h-11 rounded-lg bg-amber-600 px-4 font-medium text-white"
+        className="h-11 rounded-lg bg-brand-600 px-4 font-medium text-white transition hover:bg-brand-700"
       >
         Cetak PDF
       </button>

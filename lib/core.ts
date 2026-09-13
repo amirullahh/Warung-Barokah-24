@@ -42,6 +42,19 @@ export function validasiStruk(file: { size: number; type: string }): string | nu
   return null;
 }
 
+const LOGO_MAX_BYTES = 2 * 1024 * 1024;
+const LOGO_TIPE_DIIZINKAN = ["image/jpeg", "image/jpg", "image/png"];
+
+export function validasiLogo(file: { size: number; type: string }): string | null {
+  if (!LOGO_TIPE_DIIZINKAN.includes(file.type)) {
+    return "Format logo harus JPG atau PNG.";
+  }
+  if (file.size > LOGO_MAX_BYTES) {
+    return "Ukuran logo maksimal 2MB.";
+  }
+  return null;
+}
+
 export function rentangBulan(bulan: string): { awal: string; akhir: string } {
   const [tahun, bln] = bulan.split("-").map(Number);
   const awal = `${bulan}-01`;

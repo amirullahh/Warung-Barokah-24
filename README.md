@@ -46,7 +46,11 @@ otomatis (beli stok = pengeluaran tercatat sekali klik).
   lawan (transaksi masuk/keluar) supaya laporan tetap akurat.
 - **Laporan bulanan** — ringkasan laba rugi per bulan, export ke CSV, cetak ke PDF lewat
   `window.print()` dengan layout khusus cetak.
-- **Navigasi responsif** — sidebar di desktop, bottom navigation di mobile.
+- **Navigasi responsif** — sidebar di desktop, bottom navigation di mobile, dengan tombol
+  **ganti tema (dark/light)** dan **logout** langsung di sidebar/nav.
+- **Pengaturan warung** (`/pengaturan`, owner-only) — owner bisa mengubah nama, alamat, jam
+  operasional, dan logo warung sendiri dari dalam aplikasi (sebelumnya cuma bisa lewat
+  Supabase Dashboard secara manual). Logo diunggah ke bucket Storage publik `logo-usaha`.
 
 ## Tumpukan Teknologi
 

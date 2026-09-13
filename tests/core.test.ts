@@ -7,6 +7,7 @@ import {
   statusStok,
   validasiStokKeluar,
   validasiStruk,
+  validasiLogo,
   rentangBulan,
   ringkasanLabaRugi,
   buatCsvLaporan,
@@ -90,6 +91,21 @@ describe("validasiStruk", () => {
   });
   it("tipe pdf -> pesan error format", () => {
     expect(validasiStruk({ size: 100_000, type: "application/pdf" })).toMatch(/JPG atau PNG/);
+  });
+});
+
+describe("validasiLogo", () => {
+  it("jpg <2MB -> null (boleh)", () => {
+    expect(validasiLogo({ size: 500_000, type: "image/jpeg" })).toBeNull();
+  });
+  it("png <2MB -> null (boleh)", () => {
+    expect(validasiLogo({ size: 200_000, type: "image/png" })).toBeNull();
+  });
+  it("jpg >2MB -> pesan error ukuran", () => {
+    expect(validasiLogo({ size: 3_000_000, type: "image/jpeg" })).toMatch(/maksimal/);
+  });
+  it("tipe pdf -> pesan error format", () => {
+    expect(validasiLogo({ size: 100_000, type: "application/pdf" })).toMatch(/JPG atau PNG/);
   });
 });
 

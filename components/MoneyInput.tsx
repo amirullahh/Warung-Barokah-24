@@ -23,7 +23,7 @@ export function MoneyInput({ id, value, onChange, placeholder }: MoneyInputProps
       value={tampil}
       onChange={handleChange}
       placeholder={placeholder}
-      className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
+      className="h-11 w-full rounded-lg border border-neutral-300 px-3 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
     />
   );
 }
